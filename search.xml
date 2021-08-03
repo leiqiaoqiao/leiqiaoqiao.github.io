@@ -3,7 +3,8 @@
   <entry>
     <title>splice slice substr substring 用法与区别</title>
     <url>/2021/07/30/splice/</url>
-    <content><![CDATA[<h1 id="splice"><a href="#splice" class="headerlink" title="splice"></a>splice</h1><table>
+    <content><![CDATA[<p>splice slice substr substring 用法与区别</p>
+<table>
 <thead>
 <tr>
 <th align="left">方法</th>
@@ -120,5 +121,27 @@ width: 32%;
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>typeof</title>
+    <url>/2021/08/03/typeof/</url>
+    <content><![CDATA[<h1 id="js中的数据类型及判断方法"><a href="#js中的数据类型及判断方法" class="headerlink" title="js中的数据类型及判断方法"></a>js中的数据类型及判断方法</h1><br>  
+
+<blockquote>
+<p><strong>基本数据类型</strong><br>number  &nbsp; string  &nbsp;  boolean &nbsp;   null &nbsp;   undefined &nbsp;   symbol<br><strong>引用数据类型</strong><br>object  &nbsp;   </p>
+</blockquote>
+<p>基本数据类型也被称为简单类型，由于其占据的空间稳定，是简单的数据段，为了提升访问查询速度，因此被存放在栈中，按值访问<br>引用类型被称为复杂类型，其值会有大小的改变，不能将其存放在栈中，影响访问速度，所以存放在堆中，值储存在变量中，是一个指针，指向储存对象的内存处<br>引用类型还有 ：function date array  </p>
+<p><em><strong>typeof</strong></em><br>  对于基本类型，除 null 以外，均可以返回正确的结果(<code>原因：在JS的最初版本中使用的是32位系统，为了性能考虑使用低位存储变量的类型信息，000开头的是对象，null是全0，所以将null误判为Object了</code>)</p>
+<p>   引用类型中的 数组、日期、正则 也都有属于自己的具体类型，而 typeof 对于这些类型的处理，只返回了处于其原型链最顶端的 Object 类型，没有错，不够具体 <strong>可以准确判断出function</strong>（<code>  原因：function实际上是object的一个“子类型”，function本质上也是一个对象，但是function对象与普通对象相比，其内部有一个[[Call]]方法，用来表示这个对象是可调用的，typeof操作符在判断Object时，如果内部实现了[[Call]]方法,就返回function</code>）</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typeof</span> <span class="string">&#x27;&#x27;</span>;<span class="comment">// string 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="number">1</span>;<span class="comment">// number 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="built_in">Symbol</span>();<span class="comment">// symbol 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">true</span>;<span class="comment">//boolean 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">undefined</span>;<span class="comment">//undefined 有效  </span></span><br><span class="line"><span class="keyword">typeof</span> newFunction();<span class="comment">// function 有效 奇奇怪怪  </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">null</span>;<span class="comment">//object 无效</span></span><br><span class="line"><span class="keyword">typeof</span> [] ;<span class="comment">//object 无效</span></span><br><span class="line"><span class="keyword">typeof</span> newDate();<span class="comment">//object 无效</span></span><br><span class="line"><span class="keyword">typeof</span> newRegExp();<span class="comment">//object 无效</span></span><br></pre></td></tr></table></figure>
+
+<p><em><strong>tostring</strong></em><br>toString() 是 Object 的原型方法，默认返回当前对象的 [[Class]] 。这是一个内部属性，其格式为 [object Xxx] ，其中 Xxx 就是对象的类型(<code>除了写法麻烦一点，没有缺点</code>)</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="string">&#x27;&#x27;</span>) ;  <span class="comment">// [object String]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="number">1</span>) ;   <span class="comment">// [object Number]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">true</span>) ;<span class="comment">// [object Boolean]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">Symbol</span>());<span class="comment">//[object Symbol]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">undefined</span>) ;<span class="comment">// [object Undefined]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">null</span>) ;<span class="comment">// [object Null]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newFunction()) ;<span class="comment">// [object Function]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newDate()) ;<span class="comment">// [object Date]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call([]) ;<span class="comment">// [object Array]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newRegExp()) ;<span class="comment">// [object RegExp]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newError()) ;<span class="comment">// [object Error]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">document</span>) ;<span class="comment">// [object HTMLDocument]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">window</span>) ;<span class="comment">//[object global] window 是全局对象 global 的引用</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+      </tags>
   </entry>
 </search>
