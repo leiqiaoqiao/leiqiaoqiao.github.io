@@ -94,7 +94,7 @@
 <meta property="og:description" content="js中的数据类型及判断方法     基本数据类型number  &amp;nbsp; string  &amp;nbsp;  boolean &amp;nbsp;   null &amp;nbsp;   undefined &amp;nbsp;   symbol引用数据类型object  &amp;nbsp;     基本数据类型也被称为简单类型，由于其占据的空间稳定，是简单的数据段，为了提升访问查询速度，因此被存放在栈中，按值访问引用类型被称">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-08-03T06:51:25.000Z">
-<meta property="article:modified_time" content="2021-08-03T08:11:13.837Z">
+<meta property="article:modified_time" content="2021-08-04T06:49:41.762Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="js">
 <meta name="twitter:card" content="summary">
@@ -394,7 +394,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  592
+                  1.2k
                 </span>
               
 
@@ -410,7 +410,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  2
+                  4
                 </span>
               
             </div>
@@ -443,6 +443,23 @@
 
 <p><em><strong>tostring</strong></em><br>toString() 是 Object 的原型方法，默认返回当前对象的 [[Class]] 。这是一个内部属性，其格式为 [object Xxx] ，其中 Xxx 就是对象的类型(<code>除了写法麻烦一点，没有缺点</code>)</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="string">&#x27;&#x27;</span>) ;  <span class="comment">// [object String]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="number">1</span>) ;   <span class="comment">// [object Number]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">true</span>) ;<span class="comment">// [object Boolean]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">Symbol</span>());<span class="comment">//[object Symbol]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">undefined</span>) ;<span class="comment">// [object Undefined]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">null</span>) ;<span class="comment">// [object Null]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newFunction()) ;<span class="comment">// [object Function]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newDate()) ;<span class="comment">// [object Date]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call([]) ;<span class="comment">// [object Array]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newRegExp()) ;<span class="comment">// [object RegExp]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newError()) ;<span class="comment">// [object Error]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">document</span>) ;<span class="comment">// [object HTMLDocument]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">window</span>) ;<span class="comment">//[object global] window 是全局对象 global 的引用</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em><strong>instanceof</strong></em>  :instanceof 是用来判断 A 是否为 B 的实例，表达式为：A instanceof B，如果 A 是 B 的实例，则返回 true,否则返回 false。 在这里需要特别注意的是：<em><strong>instanceof 检测的是原型</strong></em></p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">  内部过程</span><br><span class="line">  <span class="keyword">instanceof</span> (A,B) = &#123;</span><br><span class="line">    varL = A.__proto__;</span><br><span class="line">    varR = B.prototype;</span><br><span class="line">    <span class="keyword">if</span>(L === R) &#123;</span><br><span class="line">        <span class="comment">// A的内部属性 __proto__ 指向 B 的原型对象</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  [] <span class="keyword">instanceof</span> <span class="built_in">Array</span>;<span class="comment">// true</span></span><br><span class="line">&#123;&#125; <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br><span class="line">newDate() <span class="keyword">instanceof</span> <span class="built_in">Date</span>;<span class="comment">// true</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span>(<span class="params"></span>)</span>&#123;&#125;;</span><br><span class="line">newPerson() <span class="keyword">instanceof</span> Person;</span><br><span class="line"> </span><br><span class="line">[] <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br><span class="line">newDate() <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br><span class="line">newPerson <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>我们发现，虽然 instanceof 能够判断出 [ ] 是Array的实例，但它认为 [ ] 也是Object的实例，为什么呢？</p>
+<p>我们来分析一下 [ ]、Array、Object 三者之间的关系：</p>
+<p>从 instanceof 能够判断出 [ ].<strong>proto</strong>  指向 Array.prototype，而 Array.prototype.<strong>proto</strong> 又指向了Object.prototype，最终 Object.prototype.<strong>proto</strong> 指向了null，标志着原型链的结束。因此，[]、Array、Object 就在内部形成了一条原型链：</p>
+<p>从原型链可以看出，[] 的 <strong>proto</strong>  直接指向Array.prototype，间接指向 Object.prototype，所以按照 instanceof 的判断规则，[] 就是Object的实例。依次类推，类似的 new Date()、new Person() 也会形成一条对应的原型链 。因此，instanceof 只能用来判断两个对象是否属于实例关系， 而不能判断一个对象实例具体属于哪种类型。  </p>
+<p><em><strong>constructor</strong></em> </p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">当一个函数 F被定义时，JS引擎会为F添加 prototype 原型，然后再在 prototype上添加一个 <span class="title">constructor</span> 属性，并让其指向 <span class="title">F</span> 的引用。</span><br><span class="line"></span><br><span class="line"><span class="title">function</span> <span class="title">F</span>(<span class="params"></span>)&#123;  &#125;</span><br><span class="line">当执行 <span class="keyword">var</span> f = <span class="keyword">new</span> F() 时，F 被当成了构造函数，f 是F的实例对象，此时 F 原型上的 <span class="title">constructor</span> 传递到了 <span class="title">f</span> 上，因此 <span class="title">f</span>.<span class="title">constructor</span> == <span class="title">F</span></span><br><span class="line"><span class="title">var</span> <span class="title">f</span>=<span class="title">new</span> <span class="title">F</span>(<span class="params"></span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>可以看出，F 利用原型对象上的 constructor 引用了自身，当 F 作为构造函数来创建对象时，原型上的 constructor 就被遗传到了新创建的对象上， 从原型链角度讲，构造函数 F 就是新对象的类型。这样做的意义是，让新对象在诞生以后，就具有可追溯的数据类型。<br><strong>tips</strong></p>
+<blockquote>
+<p>null和undefined是无效的对象， 因此不会有constructor存在<br>函数的constructor是不稳定的，一旦用户更改了挂载的prototype后，原有的constructor引用会丢失，constructor默认为object</p>
+</blockquote>
+
       
     </div>
     
@@ -676,7 +693,7 @@ var jiathis_config={
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">1.2k</span>
+    <span title="Site words total count">1.8k</span>
   
 </div>
 
