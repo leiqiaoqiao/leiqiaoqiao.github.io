@@ -86,11 +86,15 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="千万保住头发的前端">
-<meta property="og:url" content="http://example.com/archives/2021/08/index.html">
+<meta name="description" content="实现一个深拷贝1.乞丐版(简单，缺点：拷贝其他引用类型，函数，循环引用等会出现错误) 12Json.parse(Json.stringfy)  参考文档 https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;A42Y3pXJTBAu7fCXjndMjQ  2 高阶版本1 考虑是对象，数组，或则其他类型2 考虑循环引用，使用 map weakmap[解决循环引用问题，我们可以额外开辟一个存储空间，来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="deepcopy">
+<meta property="og:url" content="http://example.com/2022/03/07/deepcopy/index.html">
 <meta property="og:site_name" content="千万保住头发的前端">
+<meta property="og:description" content="实现一个深拷贝1.乞丐版(简单，缺点：拷贝其他引用类型，函数，循环引用等会出现错误) 12Json.parse(Json.stringfy)  参考文档 https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;A42Y3pXJTBAu7fCXjndMjQ  2 高阶版本1 考虑是对象，数组，或则其他类型2 考虑循环引用，使用 map weakmap[解决循环引用问题，我们可以额外开辟一个存储空间，来">
 <meta property="og:locale">
+<meta property="article:published_time" content="2022-03-07T09:15:24.000Z">
+<meta property="article:modified_time" content="2022-03-08T02:20:00.702Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 
@@ -122,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/archives/2021/08/"/>
+  <link rel="canonical" href="http://example.com/2022/03/07/deepcopy/"/>
 
 
 
 
 
-  <title>归档 | 千万保住头发的前端</title>
+  <title>deepcopy | 千万保住头发的前端</title>
   
 
 
@@ -148,7 +152,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
     <a target="_blank" rel="noopener" href="https://leiqiaoqiao.github.io/" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
 
@@ -277,74 +281,222 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
-
-      <span class="archive-page-counter">
-        
-        
-        
-          
-        
-        嗯..! 目前共计 8 篇日志。 继续努力。
-      </span>
-
-      
-
-        
-        
-        
-
-        
-          
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2021">2021</h1>
-          </div>
-        
-        
-
-        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/07/deepcopy/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="千万保住头发的前端">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2021/08/03/typeof/" itemprop="url">
-              
-                <span itemprop="name">typeof</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">deepcopy</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2021-08-03T14:51:25+08:00"
-              content="2021-08-03" >
-          08-03
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-03-07T17:15:24+08:00">
+                2022-03-07
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
 
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/03/07/deepcopy/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2022/03/07/deepcopy/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量<i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  749
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
+      
 
+      
+        <h1 id="实现一个深拷贝"><a href="#实现一个深拷贝" class="headerlink" title="实现一个深拷贝"></a>实现一个深拷贝</h1><p>1.乞丐版(<code>简单，缺点：拷贝其他引用类型，函数，循环引用等会出现错误</code>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Json.parse(Json.stringfy)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/A42Y3pXJTBAu7fCXjndMjQ">参考文档 https://mp.weixin.qq.com/s/A42Y3pXJTBAu7fCXjndMjQ</a></p>
+<ul>
+<li>2 高阶版本<br>1 考虑是对象，数组，或则其他类型<br>2 考虑循环引用，使用 map weakmap<br>[<code>解决循环引用问题，我们可以额外开辟一个存储空间，来存储当前对象和拷贝对象的对应关系，当需要拷贝当前对象时，先去存储空间中找，有没有拷贝过这个对象，如果有的话直接返回，如果没有的话继续拷贝，这样就巧妙化解的循环引用的问题。</code>]<br>3 考虑性能优化，foreach 替换 forin 性能 while &gt;for &gt;forin</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">clone</span>(<span class="params">target, map = <span class="keyword">new</span> <span class="built_in">Map</span>()</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> target === <span class="string">&#x27;object&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> clonetarget = <span class="built_in">Array</span>.isArray(target) ? [] : &#123;&#125; <span class="comment">//判断类型</span></span><br><span class="line">    <span class="keyword">if</span> (map.get(target)) &#123;</span><br><span class="line">      <span class="comment">// 循环引用</span></span><br><span class="line">      <span class="keyword">return</span> map.set(target, clonetarget)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> target) &#123;</span><br><span class="line">      clonetarget = clone(target[key], map)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> clonetarget</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> target</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="很完整，很优秀的一个-clone-，考虑到了各种类型，性能等问题"><a href="#很完整，很优秀的一个-clone-，考虑到了各种类型，性能等问题" class="headerlink" title="很完整，很优秀的一个 clone ，考虑到了各种类型，性能等问题"></a>很完整，很优秀的一个 clone ，考虑到了各种类型，性能等问题</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line">const mapTag = &#x27;[object Map]&#x27;;</span><br><span class="line">const setTag = &#x27;[object Set]&#x27;;</span><br><span class="line">const arrayTag = &#x27;[object Array]&#x27;;</span><br><span class="line">const objectTag = &#x27;[object Object]&#x27;;</span><br><span class="line">const argsTag = &#x27;[object Arguments]&#x27;;</span><br><span class="line"></span><br><span class="line">const boolTag = &#x27;[object Boolean]&#x27;;</span><br><span class="line">const dateTag = &#x27;[object Date]&#x27;;</span><br><span class="line">const numberTag = &#x27;[object Number]&#x27;;</span><br><span class="line">const stringTag = &#x27;[object String]&#x27;;</span><br><span class="line">const symbolTag = &#x27;[object Symbol]&#x27;;</span><br><span class="line">const errorTag = &#x27;[object Error]&#x27;;</span><br><span class="line">const regexpTag = &#x27;[object RegExp]&#x27;;</span><br><span class="line">const funcTag = &#x27;[object Function]&#x27;;</span><br><span class="line"></span><br><span class="line">const deepTag = [mapTag, setTag, arrayTag, objectTag, argsTag];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function forEach(array, iteratee) &#123;</span><br><span class="line">    let index = -1;</span><br><span class="line">    const length = array.length;</span><br><span class="line">    while (++index &lt; length) &#123;</span><br><span class="line">        iteratee(array[index], index);</span><br><span class="line">    &#125;</span><br><span class="line">    return array;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function isObject(target) &#123;</span><br><span class="line">    const type = typeof target;</span><br><span class="line">    return target !== null &amp;&amp; (type === &#x27;object&#x27; || type === &#x27;function&#x27;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function getType(target) &#123;</span><br><span class="line">    return Object.prototype.toString.call(target);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function getInit(target) &#123;</span><br><span class="line">    const Ctor = target.constructor;</span><br><span class="line">    return new Ctor();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function cloneSymbol(targe) &#123;</span><br><span class="line">    return Object(Symbol.prototype.valueOf.call(targe));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function cloneReg(targe) &#123;</span><br><span class="line">    const reFlags = /\w*$/;</span><br><span class="line">    const result = new targe.constructor(targe.source, reFlags.exec(targe));</span><br><span class="line">    result.lastIndex = targe.lastIndex;</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function cloneFunction(func) &#123;</span><br><span class="line">    const bodyReg = /(?&lt;=&#123;)(.|\n)+(?=&#125;)/m;</span><br><span class="line">    const paramReg = /(?&lt;=\().+(?=\)\s+&#123;)/;</span><br><span class="line">    const funcString = func.toString();</span><br><span class="line">    if (func.prototype) &#123;</span><br><span class="line">        const param = paramReg.exec(funcString);</span><br><span class="line">        const body = bodyReg.exec(funcString);</span><br><span class="line">        if (body) &#123;</span><br><span class="line">            if (param) &#123;</span><br><span class="line">                const paramArr = param[0].split(&#x27;,&#x27;);</span><br><span class="line">                return new Function(...paramArr, body[0]);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                return new Function(body[0]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        return eval(funcString);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function cloneOtherType(targe, type) &#123;</span><br><span class="line">    const Ctor = targe.constructor;</span><br><span class="line">    switch (type) &#123;</span><br><span class="line">        case boolTag:</span><br><span class="line">        case numberTag:</span><br><span class="line">        case stringTag:</span><br><span class="line">        case errorTag:</span><br><span class="line">        case dateTag:</span><br><span class="line">            return new Ctor(targe);</span><br><span class="line">        case regexpTag:</span><br><span class="line">            return cloneReg(targe);</span><br><span class="line">        case symbolTag:</span><br><span class="line">            return cloneSymbol(targe);</span><br><span class="line">        case funcTag:</span><br><span class="line">            return cloneFunction(targe);</span><br><span class="line">        default:</span><br><span class="line">            return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function clone(target, map = new WeakMap()) &#123;</span><br><span class="line"></span><br><span class="line">    // 克隆原始类型</span><br><span class="line">    if (!isObject(target)) &#123;</span><br><span class="line">        return target;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 初始化</span><br><span class="line">    const type = getType(target);</span><br><span class="line">    let cloneTarget;</span><br><span class="line">    if (deepTag.includes(type)) &#123;</span><br><span class="line">        cloneTarget = getInit(target, type);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        return cloneOtherType(target, type);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 防止循环引用</span><br><span class="line">    if (map.get(target)) &#123;</span><br><span class="line">        return map.get(target);</span><br><span class="line">    &#125;</span><br><span class="line">    map.set(target, cloneTarget);</span><br><span class="line"></span><br><span class="line">    // 克隆set</span><br><span class="line">    if (type === setTag) &#123;</span><br><span class="line">        target.forEach(value =&gt; &#123;</span><br><span class="line">            cloneTarget.add(clone(value, map));</span><br><span class="line">        &#125;);</span><br><span class="line">        return cloneTarget;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 克隆map</span><br><span class="line">    if (type === mapTag) &#123;</span><br><span class="line">        target.forEach((value, key) =&gt; &#123;</span><br><span class="line">            cloneTarget.set(key, clone(value, map));</span><br><span class="line">        &#125;);</span><br><span class="line">        return cloneTarget;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 克隆对象和数组</span><br><span class="line">    const keys = type === arrayTag ? undefined : Object.keys(target);</span><br><span class="line">    forEach(keys || target, (value, key) =&gt; &#123;</span><br><span class="line">        if (keys) &#123;</span><br><span class="line">            key = value;</span><br><span class="line">        &#125;</span><br><span class="line">        cloneTarget[key] = clone(target[key], map);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    return cloneTarget;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">    clone</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+      
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/12/01/photo/" rel="next" title="photo">
+                <i class="fa fa-chevron-left"></i> photo
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_fav">收藏夹</a>
+<a class="jiathis_button_copy">复制网址</a>
+<a class="jiathis_button_email">邮件</a>
+<a class="jiathis_button_weixin">微信</a>
+<a class="jiathis_button_qzone">QQ空间</a>
+<a class="jiathis_button_tqq">腾讯微博</a>
+<a class="jiathis_button_douban">豆瓣</a>
+<a class="jiathis_button_share">一键分享</a>
+
+<a href="http://www.jiathis.com/share?uid=2140465" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  summary:"",
+  shortUrl:false,
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+      
+    </div>
+  </div>
 
 
           </div>
@@ -352,6 +504,13 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
 
         </div>
         
@@ -372,8 +531,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -433,6 +601,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%B7%B1%E6%8B%B7%E8%B4%9D"><span class="nav-number">1.</span> <span class="nav-text">实现一个深拷贝</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BE%88%E5%AE%8C%E6%95%B4%EF%BC%8C%E5%BE%88%E4%BC%98%E7%A7%80%E7%9A%84%E4%B8%80%E4%B8%AA-clone-%EF%BC%8C%E8%80%83%E8%99%91%E5%88%B0%E4%BA%86%E5%90%84%E7%A7%8D%E7%B1%BB%E5%9E%8B%EF%BC%8C%E6%80%A7%E8%83%BD%E7%AD%89%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">很完整，很优秀的一个 clone ，考虑到了各种类型，性能等问题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -609,6 +793,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 

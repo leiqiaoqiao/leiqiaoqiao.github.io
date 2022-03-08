@@ -1,6 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>deepcopy</title>
+    <url>/2022/03/07/deepcopy/</url>
+    <content><![CDATA[<h1 id="实现一个深拷贝"><a href="#实现一个深拷贝" class="headerlink" title="实现一个深拷贝"></a>实现一个深拷贝</h1><p>1.乞丐版(<code>简单，缺点：拷贝其他引用类型，函数，循环引用等会出现错误</code>)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Json.parse(Json.stringfy)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><a href="https://mp.weixin.qq.com/s/A42Y3pXJTBAu7fCXjndMjQ">参考文档 https://mp.weixin.qq.com/s/A42Y3pXJTBAu7fCXjndMjQ</a></p>
+<ul>
+<li>2 高阶版本<br>1 考虑是对象，数组，或则其他类型<br>2 考虑循环引用，使用 map weakmap<br>[<code>解决循环引用问题，我们可以额外开辟一个存储空间，来存储当前对象和拷贝对象的对应关系，当需要拷贝当前对象时，先去存储空间中找，有没有拷贝过这个对象，如果有的话直接返回，如果没有的话继续拷贝，这样就巧妙化解的循环引用的问题。</code>]<br>3 考虑性能优化，foreach 替换 forin 性能 while &gt;for &gt;forin</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">clone</span>(<span class="params">target, map = <span class="keyword">new</span> <span class="built_in">Map</span>()</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> target === <span class="string">&#x27;object&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> clonetarget = <span class="built_in">Array</span>.isArray(target) ? [] : &#123;&#125; <span class="comment">//判断类型</span></span><br><span class="line">    <span class="keyword">if</span> (map.get(target)) &#123;</span><br><span class="line">      <span class="comment">// 循环引用</span></span><br><span class="line">      <span class="keyword">return</span> map.set(target, clonetarget)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> target) &#123;</span><br><span class="line">      clonetarget = clone(target[key], map)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> clonetarget</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> target</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="很完整，很优秀的一个-clone-，考虑到了各种类型，性能等问题"><a href="#很完整，很优秀的一个-clone-，考虑到了各种类型，性能等问题" class="headerlink" title="很完整，很优秀的一个 clone ，考虑到了各种类型，性能等问题"></a>很完整，很优秀的一个 clone ，考虑到了各种类型，性能等问题</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">const mapTag = &#x27;[object Map]&#x27;;</span><br><span class="line">const setTag = &#x27;[object Set]&#x27;;</span><br><span class="line">const arrayTag = &#x27;[object Array]&#x27;;</span><br><span class="line">const objectTag = &#x27;[object Object]&#x27;;</span><br><span class="line">const argsTag = &#x27;[object Arguments]&#x27;;</span><br><span class="line"></span><br><span class="line">const boolTag = &#x27;[object Boolean]&#x27;;</span><br><span class="line">const dateTag = &#x27;[object Date]&#x27;;</span><br><span class="line">const numberTag = &#x27;[object Number]&#x27;;</span><br><span class="line">const stringTag = &#x27;[object String]&#x27;;</span><br><span class="line">const symbolTag = &#x27;[object Symbol]&#x27;;</span><br><span class="line">const errorTag = &#x27;[object Error]&#x27;;</span><br><span class="line">const regexpTag = &#x27;[object RegExp]&#x27;;</span><br><span class="line">const funcTag = &#x27;[object Function]&#x27;;</span><br><span class="line"></span><br><span class="line">const deepTag = [mapTag, setTag, arrayTag, objectTag, argsTag];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function forEach(array, iteratee) &#123;</span><br><span class="line">    let index = -1;</span><br><span class="line">    const length = array.length;</span><br><span class="line">    while (++index &lt; length) &#123;</span><br><span class="line">        iteratee(array[index], index);</span><br><span class="line">    &#125;</span><br><span class="line">    return array;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function isObject(target) &#123;</span><br><span class="line">    const type = typeof target;</span><br><span class="line">    return target !== null &amp;&amp; (type === &#x27;object&#x27; || type === &#x27;function&#x27;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function getType(target) &#123;</span><br><span class="line">    return Object.prototype.toString.call(target);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function getInit(target) &#123;</span><br><span class="line">    const Ctor = target.constructor;</span><br><span class="line">    return new Ctor();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function cloneSymbol(targe) &#123;</span><br><span class="line">    return Object(Symbol.prototype.valueOf.call(targe));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function cloneReg(targe) &#123;</span><br><span class="line">    const reFlags = /\w*$/;</span><br><span class="line">    const result = new targe.constructor(targe.source, reFlags.exec(targe));</span><br><span class="line">    result.lastIndex = targe.lastIndex;</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function cloneFunction(func) &#123;</span><br><span class="line">    const bodyReg = /(?&lt;=&#123;)(.|\n)+(?=&#125;)/m;</span><br><span class="line">    const paramReg = /(?&lt;=\().+(?=\)\s+&#123;)/;</span><br><span class="line">    const funcString = func.toString();</span><br><span class="line">    if (func.prototype) &#123;</span><br><span class="line">        const param = paramReg.exec(funcString);</span><br><span class="line">        const body = bodyReg.exec(funcString);</span><br><span class="line">        if (body) &#123;</span><br><span class="line">            if (param) &#123;</span><br><span class="line">                const paramArr = param[0].split(&#x27;,&#x27;);</span><br><span class="line">                return new Function(...paramArr, body[0]);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                return new Function(body[0]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        return eval(funcString);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function cloneOtherType(targe, type) &#123;</span><br><span class="line">    const Ctor = targe.constructor;</span><br><span class="line">    switch (type) &#123;</span><br><span class="line">        case boolTag:</span><br><span class="line">        case numberTag:</span><br><span class="line">        case stringTag:</span><br><span class="line">        case errorTag:</span><br><span class="line">        case dateTag:</span><br><span class="line">            return new Ctor(targe);</span><br><span class="line">        case regexpTag:</span><br><span class="line">            return cloneReg(targe);</span><br><span class="line">        case symbolTag:</span><br><span class="line">            return cloneSymbol(targe);</span><br><span class="line">        case funcTag:</span><br><span class="line">            return cloneFunction(targe);</span><br><span class="line">        default:</span><br><span class="line">            return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function clone(target, map = new WeakMap()) &#123;</span><br><span class="line"></span><br><span class="line">    // 克隆原始类型</span><br><span class="line">    if (!isObject(target)) &#123;</span><br><span class="line">        return target;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 初始化</span><br><span class="line">    const type = getType(target);</span><br><span class="line">    let cloneTarget;</span><br><span class="line">    if (deepTag.includes(type)) &#123;</span><br><span class="line">        cloneTarget = getInit(target, type);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        return cloneOtherType(target, type);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 防止循环引用</span><br><span class="line">    if (map.get(target)) &#123;</span><br><span class="line">        return map.get(target);</span><br><span class="line">    &#125;</span><br><span class="line">    map.set(target, cloneTarget);</span><br><span class="line"></span><br><span class="line">    // 克隆set</span><br><span class="line">    if (type === setTag) &#123;</span><br><span class="line">        target.forEach(value =&gt; &#123;</span><br><span class="line">            cloneTarget.add(clone(value, map));</span><br><span class="line">        &#125;);</span><br><span class="line">        return cloneTarget;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 克隆map</span><br><span class="line">    if (type === mapTag) &#123;</span><br><span class="line">        target.forEach((value, key) =&gt; &#123;</span><br><span class="line">            cloneTarget.set(key, clone(value, map));</span><br><span class="line">        &#125;);</span><br><span class="line">        return cloneTarget;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 克隆对象和数组</span><br><span class="line">    const keys = type === arrayTag ? undefined : Object.keys(target);</span><br><span class="line">    forEach(keys || target, (value, key) =&gt; &#123;</span><br><span class="line">        if (keys) &#123;</span><br><span class="line">            key = value;</span><br><span class="line">        &#125;</span><br><span class="line">        cloneTarget[key] = clone(target[key], map);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    return cloneTarget;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">    clone</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
+    <title>git命令收集</title>
+    <url>/2021/11/17/git/</url>
+    <content><![CDATA[<h1 id="Git-恢复被删除的文件"><a href="#Git-恢复被删除的文件" class="headerlink" title="Git 恢复被删除的文件"></a>Git 恢复被删除的文件</h1><p>1、首先使用命令获取被删除文件的 commit</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">git log --diff-filter=D --summary</span><br></pre></td></tr></table></figure>
+
+<p>2、然后找到要恢复的文件所在的 commit 和文件名 commitID</p>
+<p><img src="/2021/11/17/git/git.png" alt="这是代替图片的文字，随便写"></p>
+<p>3 恢复文件 git checkout commitID~1 文件地址 [<code> 一定要写文件的全路径，而不是只有一个文件名</code>]</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">git checkout 9a373b7c0d2ddd2eab95811bb2515b162f35fb05~<span class="number">1</span> h5/src/views/SelectRole.vue</span><br></pre></td></tr></table></figure>
+<h1 id="git"><a href="#git" class="headerlink" title="git"></a>git</h1>]]></content>
+  </entry>
+  <entry>
+    <title>eventloop</title>
+    <url>/2021/07/27/eventloop/</url>
+    <content><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><!--加这个more有格式  -->
+<span id="more"></span>
+
+<ul>
+<li>列表1  </li>
+<li>列表2<br>a字列表<br>a字列表  </li>
+<li>列表3<br><a href="https://leiqiaoqiao.github.io/">我的博客</a></li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20200709152547835.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQxMTcwOTgz,size_16,color_FFFFFF,t_70" alt="我的博客"></p>
+<p><em>斜线</em><br><a href="https://leiqiaoqiao.github.io/">我的博客</a></p>
+<p><strong>加粗</strong></p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line">&lt;Col span=&#123;<span class="number">2</span>&#125;&gt;</span><br><span class="line">              <span class="xml"><span class="tag">&lt;<span class="name">Button</span> <span class="attr">onClick</span>=<span class="string">&#123;doExport&#125;</span>&gt;</span>导出<span class="tag">&lt;/<span class="name">Button</span>&gt;</span></span></span><br><span class="line">&lt;/Col&gt;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>导航</tag>
+        <tag>分享</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>photo</title>
+    <url>/2021/12/01/photo/</url>
+    <content><![CDATA[<p><img src="/2021/12/01/photo/git.png" alt="这是代替图片的文字，随便写"></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>git命令收集</title>
+    <url>/2021/11/17/someting/</url>
+    <content><![CDATA[<h1 id="Git恢复被删除的文件"><a href="#Git恢复被删除的文件" class="headerlink" title="Git恢复被删除的文件"></a>Git恢复被删除的文件</h1><p>1、首先使用命令获取被删除文件的commit</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">git log --diff-filter=D --summary</span><br></pre></td></tr></table></figure>
+
+
+<p>2、然后找到要恢复的文件所在的commit和文件名 commitID   一定要写文件的全路径，而不是只有一个文件名</p>
+<p>3  git checkout 9a373b7c0d2ddd2eab95811bb2515b162f35fb05~1 h5/src/views/SelectRole.vue</p>
+<p><strong>tips</strong></p>
+<blockquote>
+<p>9a373b7c0d2ddd2eab95811bb2515b162f35fb05：ID     ~1 回退一个</p>
+</blockquote>
+]]></content>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2021/07/26/hello-world/</url>
+    <content><![CDATA[<p><a href="http://niliu.me/articles/2647.html">http://niliu.me/articles/2647.html</a><br>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>typeof</title>
+    <url>/2021/08/03/typeof/</url>
+    <content><![CDATA[<h1 id="js中的数据类型及判断方法"><a href="#js中的数据类型及判断方法" class="headerlink" title="js中的数据类型及判断方法"></a>js中的数据类型及判断方法</h1><br>  
+
+<blockquote>
+<p><strong>基本数据类型</strong><br>number  &nbsp; string  &nbsp;  boolean &nbsp;   null &nbsp;   undefined &nbsp;   symbol<br><strong>引用数据类型</strong><br>object  &nbsp;   </p>
+</blockquote>
+<p>基本数据类型也被称为简单类型，由于其占据的空间稳定，是简单的数据段，为了提升访问查询速度，因此被存放在栈中，按值访问<br>引用类型被称为复杂类型，其值会有大小的改变，不能将其存放在栈中，影响访问速度，所以存放在堆中，值储存在变量中，是一个指针，指向储存对象的内存处<br>引用类型还有 ：function date array  </p>
+<p><em><strong>typeof</strong></em><br>  对于基本类型，除 null 以外，均可以返回正确的结果(<code>原因：在JS的最初版本中使用的是32位系统，为了性能考虑使用低位存储变量的类型信息，000开头的是对象，null是全0，所以将null误判为Object了</code>)</p>
+<p>   引用类型中的 数组、日期、正则 也都有属于自己的具体类型，而 typeof 对于这些类型的处理，只返回了处于其原型链最顶端的 Object 类型，没有错，不够具体 <strong>可以准确判断出function</strong>（<code>  原因：function实际上是object的一个“子类型”，function本质上也是一个对象，但是function对象与普通对象相比，其内部有一个[[Call]]方法，用来表示这个对象是可调用的，typeof操作符在判断Object时，如果内部实现了[[Call]]方法,就返回function</code>）</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typeof</span> <span class="string">&#x27;&#x27;</span>;<span class="comment">// string 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="number">1</span>;<span class="comment">// number 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="built_in">Symbol</span>();<span class="comment">// symbol 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">true</span>;<span class="comment">//boolean 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">undefined</span>;<span class="comment">//undefined 有效  </span></span><br><span class="line"><span class="keyword">typeof</span> newFunction();<span class="comment">// function 有效 奇奇怪怪  </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">null</span>;<span class="comment">//object 无效</span></span><br><span class="line"><span class="keyword">typeof</span> [] ;<span class="comment">//object 无效</span></span><br><span class="line"><span class="keyword">typeof</span> newDate();<span class="comment">//object 无效</span></span><br><span class="line"><span class="keyword">typeof</span> newRegExp();<span class="comment">//object 无效</span></span><br></pre></td></tr></table></figure>
+
+<p><em><strong>tostring</strong></em><br>toString() 是 Object 的原型方法，默认返回当前对象的 [[Class]] 。这是一个内部属性，其格式为 [object Xxx] ，其中 Xxx 就是对象的类型(<code>除了写法麻烦一点，没有缺点</code>)</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="string">&#x27;&#x27;</span>) ;  <span class="comment">// [object String]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="number">1</span>) ;   <span class="comment">// [object Number]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">true</span>) ;<span class="comment">// [object Boolean]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">Symbol</span>());<span class="comment">//[object Symbol]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">undefined</span>) ;<span class="comment">// [object Undefined]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">null</span>) ;<span class="comment">// [object Null]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newFunction()) ;<span class="comment">// [object Function]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newDate()) ;<span class="comment">// [object Date]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call([]) ;<span class="comment">// [object Array]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newRegExp()) ;<span class="comment">// [object RegExp]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newError()) ;<span class="comment">// [object Error]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">document</span>) ;<span class="comment">// [object HTMLDocument]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">window</span>) ;<span class="comment">//[object global] window 是全局对象 global 的引用</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em><strong>instanceof</strong></em>  :instanceof 是用来判断 A 是否为 B 的实例，表达式为：A instanceof B，如果 A 是 B 的实例，则返回 true,否则返回 false。 在这里需要特别注意的是：<em><strong>instanceof 检测的是原型</strong></em></p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">  内部过程</span><br><span class="line">  <span class="keyword">instanceof</span> (A,B) = &#123;</span><br><span class="line">    varL = A.__proto__;</span><br><span class="line">    varR = B.prototype;</span><br><span class="line">    <span class="keyword">if</span>(L === R) &#123;</span><br><span class="line">        <span class="comment">// A的内部属性 __proto__ 指向 B 的原型对象</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">  [] <span class="keyword">instanceof</span> <span class="built_in">Array</span>;<span class="comment">// true</span></span><br><span class="line">&#123;&#125; <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br><span class="line">newDate() <span class="keyword">instanceof</span> <span class="built_in">Date</span>;<span class="comment">// true</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span>(<span class="params"></span>)</span>&#123;&#125;;</span><br><span class="line">newPerson() <span class="keyword">instanceof</span> Person;</span><br><span class="line"> </span><br><span class="line">[] <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br><span class="line">newDate() <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br><span class="line">newPerson <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>我们发现，虽然 instanceof 能够判断出 [ ] 是Array的实例，但它认为 [ ] 也是Object的实例，为什么呢？</p>
+<p>我们来分析一下 [ ]、Array、Object 三者之间的关系：</p>
+<p>从 instanceof 能够判断出 [ ].<strong>proto</strong>  指向 Array.prototype，而 Array.prototype.<strong>proto</strong> 又指向了Object.prototype，最终 Object.prototype.<strong>proto</strong> 指向了null，标志着原型链的结束。因此，[]、Array、Object 就在内部形成了一条原型链：</p>
+<p>从原型链可以看出，[] 的 <strong>proto</strong>  直接指向Array.prototype，间接指向 Object.prototype，所以按照 instanceof 的判断规则，[] 就是Object的实例。依次类推，类似的 new Date()、new Person() 也会形成一条对应的原型链 。因此，instanceof 只能用来判断两个对象是否属于实例关系， 而不能判断一个对象实例具体属于哪种类型。  </p>
+<p><em><strong>constructor</strong></em> </p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">当一个函数 F被定义时，JS引擎会为F添加 prototype 原型，然后再在 prototype上添加一个 <span class="title">constructor</span> 属性，并让其指向 <span class="title">F</span> 的引用。</span><br><span class="line"></span><br><span class="line"><span class="title">function</span> <span class="title">F</span>(<span class="params"></span>)&#123;  &#125;</span><br><span class="line">当执行 <span class="keyword">var</span> f = <span class="keyword">new</span> F() 时，F 被当成了构造函数，f 是F的实例对象，此时 F 原型上的 <span class="title">constructor</span> 传递到了 <span class="title">f</span> 上，因此 <span class="title">f</span>.<span class="title">constructor</span> == <span class="title">F</span></span><br><span class="line"><span class="title">var</span> <span class="title">f</span>=<span class="title">new</span> <span class="title">F</span>(<span class="params"></span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>可以看出，F 利用原型对象上的 constructor 引用了自身，当 F 作为构造函数来创建对象时，原型上的 constructor 就被遗传到了新创建的对象上， 从原型链角度讲，构造函数 F 就是新对象的类型。这样做的意义是，让新对象在诞生以后，就具有可追溯的数据类型。<br><strong>tips</strong></p>
+<blockquote>
+<p>null和undefined是无效的对象， 因此不会有constructor存在<br>函数的constructor是不稳定的，一旦用户更改了挂载的prototype后，原有的constructor引用会丢失，constructor默认为object</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>splice slice substr substring 用法与区别</title>
     <url>/2021/07/30/splice/</url>
     <content><![CDATA[<p>splice slice substr substring 用法与区别</p>
@@ -75,88 +205,6 @@ width: 32%;
 }
 
 </style>]]></content>
-      <tags>
-        <tag>js</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>eventloop</title>
-    <url>/2021/07/27/eventloop/</url>
-    <content><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><!--加这个more有格式  -->
-<span id="more"></span>
-
-<ul>
-<li>列表1  </li>
-<li>列表2<br>a字列表<br>a字列表  </li>
-<li>列表3<br><a href="https://leiqiaoqiao.github.io/">我的博客</a></li>
-</ul>
-<p><img src="https://img-blog.csdnimg.cn/20200709152547835.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQxMTcwOTgz,size_16,color_FFFFFF,t_70" alt="我的博客"></p>
-<p><em>斜线</em><br><a href="https://leiqiaoqiao.github.io/">我的博客</a></p>
-<p><strong>加粗</strong></p>
-<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line">&lt;Col span=&#123;<span class="number">2</span>&#125;&gt;</span><br><span class="line">              <span class="xml"><span class="tag">&lt;<span class="name">Button</span> <span class="attr">onClick</span>=<span class="string">&#123;doExport&#125;</span>&gt;</span>导出<span class="tag">&lt;/<span class="name">Button</span>&gt;</span></span></span><br><span class="line">&lt;/Col&gt;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>前端</category>
-      </categories>
-      <tags>
-        <tag>导航</tag>
-        <tag>分享</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2021/07/26/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-  </entry>
-  <entry>
-    <title>typeof</title>
-    <url>/2021/08/03/typeof/</url>
-    <content><![CDATA[<h1 id="js中的数据类型及判断方法"><a href="#js中的数据类型及判断方法" class="headerlink" title="js中的数据类型及判断方法"></a>js中的数据类型及判断方法</h1><br>  
-
-<blockquote>
-<p><strong>基本数据类型</strong><br>number  &nbsp; string  &nbsp;  boolean &nbsp;   null &nbsp;   undefined &nbsp;   symbol<br><strong>引用数据类型</strong><br>object  &nbsp;   </p>
-</blockquote>
-<p>基本数据类型也被称为简单类型，由于其占据的空间稳定，是简单的数据段，为了提升访问查询速度，因此被存放在栈中，按值访问<br>引用类型被称为复杂类型，其值会有大小的改变，不能将其存放在栈中，影响访问速度，所以存放在堆中，值储存在变量中，是一个指针，指向储存对象的内存处<br>引用类型还有 ：function date array  </p>
-<p><em><strong>typeof</strong></em><br>  对于基本类型，除 null 以外，均可以返回正确的结果(<code>原因：在JS的最初版本中使用的是32位系统，为了性能考虑使用低位存储变量的类型信息，000开头的是对象，null是全0，所以将null误判为Object了</code>)</p>
-<p>   引用类型中的 数组、日期、正则 也都有属于自己的具体类型，而 typeof 对于这些类型的处理，只返回了处于其原型链最顶端的 Object 类型，没有错，不够具体 <strong>可以准确判断出function</strong>（<code>  原因：function实际上是object的一个“子类型”，function本质上也是一个对象，但是function对象与普通对象相比，其内部有一个[[Call]]方法，用来表示这个对象是可调用的，typeof操作符在判断Object时，如果内部实现了[[Call]]方法,就返回function</code>）</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typeof</span> <span class="string">&#x27;&#x27;</span>;<span class="comment">// string 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="number">1</span>;<span class="comment">// number 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="built_in">Symbol</span>();<span class="comment">// symbol 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">true</span>;<span class="comment">//boolean 有效</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">undefined</span>;<span class="comment">//undefined 有效  </span></span><br><span class="line"><span class="keyword">typeof</span> newFunction();<span class="comment">// function 有效 奇奇怪怪  </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">null</span>;<span class="comment">//object 无效</span></span><br><span class="line"><span class="keyword">typeof</span> [] ;<span class="comment">//object 无效</span></span><br><span class="line"><span class="keyword">typeof</span> newDate();<span class="comment">//object 无效</span></span><br><span class="line"><span class="keyword">typeof</span> newRegExp();<span class="comment">//object 无效</span></span><br></pre></td></tr></table></figure>
-
-<p><em><strong>tostring</strong></em><br>toString() 是 Object 的原型方法，默认返回当前对象的 [[Class]] 。这是一个内部属性，其格式为 [object Xxx] ，其中 Xxx 就是对象的类型(<code>除了写法麻烦一点，没有缺点</code>)</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="string">&#x27;&#x27;</span>) ;  <span class="comment">// [object String]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="number">1</span>) ;   <span class="comment">// [object Number]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">true</span>) ;<span class="comment">// [object Boolean]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">Symbol</span>());<span class="comment">//[object Symbol]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">undefined</span>) ;<span class="comment">// [object Undefined]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">null</span>) ;<span class="comment">// [object Null]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newFunction()) ;<span class="comment">// [object Function]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newDate()) ;<span class="comment">// [object Date]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call([]) ;<span class="comment">// [object Array]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newRegExp()) ;<span class="comment">// [object RegExp]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(newError()) ;<span class="comment">// [object Error]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">document</span>) ;<span class="comment">// [object HTMLDocument]</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">window</span>) ;<span class="comment">//[object global] window 是全局对象 global 的引用</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><em><strong>instanceof</strong></em>  :instanceof 是用来判断 A 是否为 B 的实例，表达式为：A instanceof B，如果 A 是 B 的实例，则返回 true,否则返回 false。 在这里需要特别注意的是：<em><strong>instanceof 检测的是原型</strong></em></p>
-  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">  内部过程</span><br><span class="line">  <span class="keyword">instanceof</span> (A,B) = &#123;</span><br><span class="line">    varL = A.__proto__;</span><br><span class="line">    varR = B.prototype;</span><br><span class="line">    <span class="keyword">if</span>(L === R) &#123;</span><br><span class="line">        <span class="comment">// A的内部属性 __proto__ 指向 B 的原型对象</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">  [] <span class="keyword">instanceof</span> <span class="built_in">Array</span>;<span class="comment">// true</span></span><br><span class="line">&#123;&#125; <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br><span class="line">newDate() <span class="keyword">instanceof</span> <span class="built_in">Date</span>;<span class="comment">// true</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span>(<span class="params"></span>)</span>&#123;&#125;;</span><br><span class="line">newPerson() <span class="keyword">instanceof</span> Person;</span><br><span class="line"> </span><br><span class="line">[] <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br><span class="line">newDate() <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br><span class="line">newPerson <span class="keyword">instanceof</span> <span class="built_in">Object</span>;<span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-
-<p>我们发现，虽然 instanceof 能够判断出 [ ] 是Array的实例，但它认为 [ ] 也是Object的实例，为什么呢？</p>
-<p>我们来分析一下 [ ]、Array、Object 三者之间的关系：</p>
-<p>从 instanceof 能够判断出 [ ].<strong>proto</strong>  指向 Array.prototype，而 Array.prototype.<strong>proto</strong> 又指向了Object.prototype，最终 Object.prototype.<strong>proto</strong> 指向了null，标志着原型链的结束。因此，[]、Array、Object 就在内部形成了一条原型链：</p>
-<p>从原型链可以看出，[] 的 <strong>proto</strong>  直接指向Array.prototype，间接指向 Object.prototype，所以按照 instanceof 的判断规则，[] 就是Object的实例。依次类推，类似的 new Date()、new Person() 也会形成一条对应的原型链 。因此，instanceof 只能用来判断两个对象是否属于实例关系， 而不能判断一个对象实例具体属于哪种类型。  </p>
-<p><em><strong>constructor</strong></em> </p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">当一个函数 F被定义时，JS引擎会为F添加 prototype 原型，然后再在 prototype上添加一个 <span class="title">constructor</span> 属性，并让其指向 <span class="title">F</span> 的引用。</span><br><span class="line"></span><br><span class="line"><span class="title">function</span> <span class="title">F</span>(<span class="params"></span>)&#123;  &#125;</span><br><span class="line">当执行 <span class="keyword">var</span> f = <span class="keyword">new</span> F() 时，F 被当成了构造函数，f 是F的实例对象，此时 F 原型上的 <span class="title">constructor</span> 传递到了 <span class="title">f</span> 上，因此 <span class="title">f</span>.<span class="title">constructor</span> == <span class="title">F</span></span><br><span class="line"><span class="title">var</span> <span class="title">f</span>=<span class="title">new</span> <span class="title">F</span>(<span class="params"></span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>可以看出，F 利用原型对象上的 constructor 引用了自身，当 F 作为构造函数来创建对象时，原型上的 constructor 就被遗传到了新创建的对象上， 从原型链角度讲，构造函数 F 就是新对象的类型。这样做的意义是，让新对象在诞生以后，就具有可追溯的数据类型。<br><strong>tips</strong></p>
-<blockquote>
-<p>null和undefined是无效的对象， 因此不会有constructor存在<br>函数的constructor是不稳定的，一旦用户更改了挂载的prototype后，原有的constructor引用会丢失，constructor默认为object</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>前端</category>
-      </categories>
       <tags>
         <tag>js</tag>
       </tags>
