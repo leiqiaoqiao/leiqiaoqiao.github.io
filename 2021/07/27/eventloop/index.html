@@ -86,21 +86,19 @@
 
 
 
-<meta name="description" content="一级标题二级标题三级标题">
+<meta name="description" content="事件循环Event Loop 即事件循环，是一种解决 javaScript 单线程运行时不会阻塞的一种机制，也就是我们经常使用异步的原理。 从主线程开始执行同步任务，结束后，执行微任务，最后宏任务">
 <meta property="og:type" content="article">
 <meta property="og:title" content="eventloop">
 <meta property="og:url" content="http://example.com/2021/07/27/eventloop/index.html">
 <meta property="og:site_name" content="千万保住头发的前端">
-<meta property="og:description" content="一级标题二级标题三级标题">
+<meta property="og:description" content="事件循环Event Loop 即事件循环，是一种解决 javaScript 单线程运行时不会阻塞的一种机制，也就是我们经常使用异步的原理。 从主线程开始执行同步任务，结束后，执行微任务，最后宏任务">
 <meta property="og:locale">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20200709152547835.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQxMTcwOTgz,size_16,color_FFFFFF,t_70">
 <meta property="article:published_time" content="2021-07-27T08:26:26.000Z">
-<meta property="article:modified_time" content="2021-07-28T06:12:36.899Z">
+<meta property="article:modified_time" content="2022-03-09T08:35:28.594Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="导航">
 <meta property="article:tag" content="分享">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200709152547835.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQxMTcwOTgz,size_16,color_FFFFFF,t_70">
 
 
 
@@ -397,7 +395,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  62
+                  71
                 </span>
               
 
@@ -434,19 +432,8 @@
       
 
       
-        <h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><!--加这个more有格式  -->
-<span id="more"></span>
-
-<ul>
-<li>列表1  </li>
-<li>列表2<br>a字列表<br>a字列表  </li>
-<li>列表3<br><a target="_blank" rel="noopener" href="https://leiqiaoqiao.github.io/">我的博客</a></li>
-</ul>
-<p><img src="https://img-blog.csdnimg.cn/20200709152547835.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQxMTcwOTgz,size_16,color_FFFFFF,t_70" alt="我的博客"></p>
-<p><em>斜线</em><br><a target="_blank" rel="noopener" href="https://leiqiaoqiao.github.io/">我的博客</a></p>
-<p><strong>加粗</strong></p>
-<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;Col span=&#123;<span class="number">2</span>&#125;&gt;</span><br><span class="line">              <span class="xml"><span class="tag">&lt;<span class="name">Button</span> <span class="attr">onClick</span>=<span class="string">&#123;doExport&#125;</span>&gt;</span>导出<span class="tag">&lt;/<span class="name">Button</span>&gt;</span></span></span><br><span class="line">&lt;/Col&gt;</span><br></pre></td></tr></table></figure>
-
+        <h1 id="事件循环"><a href="#事件循环" class="headerlink" title="事件循环"></a>事件循环</h1><p>Event Loop 即事件循环，是一种解决 javaScript 单线程运行时不会阻塞的一种机制，也就是我们经常使用异步的原理。</p>
+<p>从主线程开始执行同步任务，结束后，执行微任务，最后宏任务</p>
 
       
     </div>
@@ -599,7 +586,7 @@ var jiathis_config={
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -654,7 +641,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E7%BA%A7%E6%A0%87%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">一级标题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E7%BA%A7%E6%A0%87%E9%A2%98"><span class="nav-number">1.1.</span> <span class="nav-text">二级标题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E7%BA%A7%E6%A0%87%E9%A2%98"><span class="nav-number">1.1.1.</span> <span class="nav-text">三级标题</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.</span> <span class="nav-text">事件循环</span></a></li></ol></div>
             
 
           </div>
@@ -688,7 +675,7 @@ var jiathis_config={
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">2.7k</span>
+    <span title="Site words total count">3.1k</span>
   
 </div>
 

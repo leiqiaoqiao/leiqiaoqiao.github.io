@@ -86,15 +86,15 @@
 
 
 
-<meta name="description" content="Git恢复被删除的文件1、首先使用命令获取被删除文件的commit 1git log --diff-filter&#x3D;D --summary   2、然后找到要恢复的文件所在的commit和文件名 commitID   一定要写文件的全路径，而不是只有一个文件名 3  git checkout 9a373b7c0d2ddd2eab95811bb2515b162f35fb05~1 h5&#x2F;src&#x2F;view">
+<meta name="description" content="promise解释：Promise 是异步编程的一种解决方案，其实是一个构造函数，自己身上有 all、reject、resolve 这几个方法，原型上有 then、catch 等方法。 状态：  Pending（进行中、未完成的）Resolved（已完成，又称 Fulfilled）Rejected（已失败）。  缺点 ：  1 无法取消，2 不设置回调函数，内部抛出的错误，不会反应到外部，3 不清">
 <meta property="og:type" content="article">
-<meta property="og:title" content="git命令收集">
-<meta property="og:url" content="http://example.com/2021/11/17/someting/index.html">
+<meta property="og:title" content="questions">
+<meta property="og:url" content="http://example.com/2022/03/09/questions/index.html">
 <meta property="og:site_name" content="千万保住头发的前端">
-<meta property="og:description" content="Git恢复被删除的文件1、首先使用命令获取被删除文件的commit 1git log --diff-filter&#x3D;D --summary   2、然后找到要恢复的文件所在的commit和文件名 commitID   一定要写文件的全路径，而不是只有一个文件名 3  git checkout 9a373b7c0d2ddd2eab95811bb2515b162f35fb05~1 h5&#x2F;src&#x2F;view">
+<meta property="og:description" content="promise解释：Promise 是异步编程的一种解决方案，其实是一个构造函数，自己身上有 all、reject、resolve 这几个方法，原型上有 then、catch 等方法。 状态：  Pending（进行中、未完成的）Resolved（已完成，又称 Fulfilled）Rejected（已失败）。  缺点 ：  1 无法取消，2 不设置回调函数，内部抛出的错误，不会反应到外部，3 不清">
 <meta property="og:locale">
-<meta property="article:published_time" content="2021-11-17T01:47:54.000Z">
-<meta property="article:modified_time" content="2021-12-01T02:37:45.006Z">
+<meta property="article:published_time" content="2022-03-09T08:38:29.000Z">
+<meta property="article:modified_time" content="2022-03-11T07:27:16.725Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 
@@ -126,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/2021/11/17/someting/"/>
+  <link rel="canonical" href="http://example.com/2022/03/09/questions/"/>
 
 
 
 
 
-  <title>git命令收集 | 千万保住头发的前端</title>
+  <title>questions | 千万保住头发的前端</title>
   
 
 
@@ -295,7 +295,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/17/someting/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/09/questions/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -312,7 +312,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">git命令收集</h1>
+          <h1 class="post-title" itemprop="name headline">questions</h1>
         
 
         <div class="post-meta">
@@ -324,8 +324,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-11-17T09:47:54+08:00">
-                2021-11-17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-03-09T16:38:29+08:00">
+                2022-03-09
               </time>
             
 
@@ -343,8 +343,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2021/11/17/someting/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2021/11/17/someting/" itemprop="commentCount"></span>
+                <a href="/2022/03/09/questions/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2022/03/09/questions/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -371,7 +371,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  88
+                  339
                 </span>
               
 
@@ -408,16 +408,23 @@
       
 
       
-        <h1 id="Git恢复被删除的文件"><a href="#Git恢复被删除的文件" class="headerlink" title="Git恢复被删除的文件"></a>Git恢复被删除的文件</h1><p>1、首先使用命令获取被删除文件的commit</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git log --diff-filter=D --summary</span><br></pre></td></tr></table></figure>
-
-
-<p>2、然后找到要恢复的文件所在的commit和文件名 commitID   一定要写文件的全路径，而不是只有一个文件名</p>
-<p>3  git checkout 9a373b7c0d2ddd2eab95811bb2515b162f35fb05~1 h5/src/views/SelectRole.vue</p>
-<p><strong>tips</strong></p>
+        <h1 id="promise"><a href="#promise" class="headerlink" title="promise"></a>promise</h1><p>解释：Promise 是异步编程的一种解决方案，其实是一个构造函数，自己身上有 all、reject、resolve 这几个方法，原型上有 then、catch 等方法。</p>
+<p>状态：</p>
 <blockquote>
-<p>9a373b7c0d2ddd2eab95811bb2515b162f35fb05：ID     ~1 回退一个</p>
+<p>Pending（进行中、未完成的）<br>Resolved（已完成，又称 Fulfilled）<br>Rejected（已失败）。</p>
 </blockquote>
+<p>缺点 ：</p>
+<blockquote>
+<p>1 无法取消，<br>2 不设置回调函数，内部抛出的错误，不会反应到外部，<br>3 不清楚执行到哪里了</p>
+</blockquote>
+<p>优点：</p>
+<blockquote>
+<p>1 解决回调地狱（Callback Hell）问题<br>2 代码就会变得扁平且更可读了<br>3 更好地进行错误捕获</p>
+</blockquote>
+<h1 id="BFC"><a href="#BFC" class="headerlink" title="BFC:"></a>BFC:</h1><h1 id="url-输入过程发生了什么？"><a href="#url-输入过程发生了什么？" class="headerlink" title="url 输入过程发生了什么？"></a>url 输入过程发生了什么？</h1><p>1 DNS 域名解析<br>本地 hosts 文件里没有这个域名一起对应的 IP 地址映射，那么就求助于本地 DNS 服务器，大概就是系统向本地 DNS 服务器发送请求去查询域名对应的 IP 地址，本地 DNS 服务器响应请求，找到 IP 地址并将结果（IP 地址）返回给浏览器，本地 DNS 服务器会层层向上一级的 DNS 服务器发送请求，直至 DNS 根服务器</p>
+<h1 id="get-post-区别"><a href="#get-post-区别" class="headerlink" title="get post 区别"></a>get post 区别</h1><p>①get 产生一个 tcp 数据包，post 产生两个</p>
+<p>②get 请求时会把 headers 和 data 数据一起发送出去；</p>
+<p>③post 请求时，浏览器先发送 headers，服务器 100 继续，浏览器再发送 data。</p>
 
       
     </div>
@@ -442,8 +449,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2021/08/03/typeof/" rel="next" title="typeof">
-                <i class="fa fa-chevron-left"></i> typeof
+              <a href="/2022/03/07/deepcopy/" rel="next" title="deepcopy">
+                <i class="fa fa-chevron-left"></i> deepcopy
               </a>
             
           </div>
@@ -451,10 +458,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2021/11/17/git/" rel="prev" title="git命令收集">
-                git命令收集 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -560,7 +563,7 @@ var jiathis_config={
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -615,7 +618,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Git%E6%81%A2%E5%A4%8D%E8%A2%AB%E5%88%A0%E9%99%A4%E7%9A%84%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">Git恢复被删除的文件</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#promise"><span class="nav-number">1.</span> <span class="nav-text">promise</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BFC"><span class="nav-number">2.</span> <span class="nav-text">BFC:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#url-%E8%BE%93%E5%85%A5%E8%BF%87%E7%A8%8B%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">url 输入过程发生了什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#get-post-%E5%8C%BA%E5%88%AB"><span class="nav-number">4.</span> <span class="nav-text">get post 区别</span></a></li></ol></div>
             
 
           </div>
@@ -649,7 +652,7 @@ var jiathis_config={
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">2.7k</span>
+    <span title="Site words total count">3.1k</span>
   
 </div>
 
